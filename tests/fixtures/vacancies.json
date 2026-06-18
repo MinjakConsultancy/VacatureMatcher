@@ -1,0 +1,54 @@
+[
+  {
+    "slug": "senior-data-engineer-voorbeeld-2026-001",
+    "url": "https://www.ikwerkvoornederland.nl/werkaanbod/vacatures/senior-data-engineer-voorbeeld-2026-001",
+    "title": "Senior Data Engineer",
+    "organisation": "Ministerie van Voorbeeld",
+    "location": "Den Haag",
+    "hours": "36 uur",
+    "scale": "Schaal 12",
+    "education": "Wo",
+    "deadline": "2026-07-15",
+    "summary": "Bouw en onderhoud data platformen met Python en cloud.",
+    "detail_text": "Dit ga je doen\nJe ontwerpt en realiseert data pipelines met Python, SQL en Spark. Je werkt met Kubernetes en CI/CD in een agile team.\n\nDit vragen we\nErvaring als data engineer of software engineer. Kennis van Python, SQL, Docker en cloud (Azure of AWS). DevOps mindset.\n\nDit bieden we\nEen uitdagende rol in Den Haag, schaal 12, hybride werken.",
+    "vakgebieden": ["ICT"],
+    "contacts": [
+      {
+        "contact_type": "recruiter",
+        "name": "A. Voorbeeld",
+        "email": "recruiter@voorbeeld.nl",
+        "phone": "070-0000000"
+      }
+    ]
+  },
+  {
+    "slug": "platform-engineer-voorbeeld-2026-002",
+    "url": "https://www.ikwerkvoornederland.nl/werkaanbod/vacatures/platform-engineer-voorbeeld-2026-002",
+    "title": "Platform Engineer",
+    "organisation": "Dienst ICT Uitvoering",
+    "location": "Utrecht",
+    "hours": "32 - 36 uur",
+    "scale": "Schaal 11",
+    "education": "Hbo/Wo",
+    "deadline": "2026-08-01",
+    "summary": "Platform engineering en GitOps voor overheidsapplicaties.",
+    "detail_text": "Dit ga je doen\nJe bouwt en beheert Kubernetes-platformen, Helm charts en GitLab pipelines. Je ondersteunt development teams met self-service tooling.\n\nDit vragen we\nErvaring met Docker, Kubernetes, Terraform of Helm. Kennis van Linux en networking. Security awareness.\n\nDit bieden we\nSchaal 11, flexibele werktijden.",
+    "vakgebieden": ["ICT"],
+    "contacts": []
+  },
+  {
+    "slug": "junior-sap-consultant-voorbeeld-2026-003",
+    "url": "https://www.ikwerkvoornederland.nl/werkaanbod/vacatures/junior-sap-consultant-voorbeeld-2026-003",
+    "title": "Junior SAP Consultant",
+    "organisation": "Agentschap Voorbeeld",
+    "location": "Groningen",
+    "hours": "40 uur",
+    "scale": "Schaal 9",
+    "education": "Hbo",
+    "deadline": "2026-06-30",
+    "summary": "Startende SAP ABAP rol voor junior consultants.",
+    "detail_text": "Dit ga je doen\nJe leert SAP ABAP configuratie en ondersteunt key users.\n\nDit vragen we\nJunior profiel met interesse in SAP. Trainee traject beschikbaar.",
+    "vakgebieden": ["ICT"],
+    "contacts": []
+  }
+]

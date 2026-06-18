@@ -1,0 +1,16 @@
+Naar overzicht
+Op deze pagina
+Vacature
+Senior Data Engineer
+Ministerie van Voorbeeld
+Solliciteer voor 15 juli 2026
+Den Haag
+36 uur
+€ 4.624 - € 7.097 (bruto)
+Wo
+Plaatsingsdatum: 10 juni 2026
+Dit ga je doen
+Je ontwerpt en realiseert data pipelines met Python, SQL en Spark.
+Je werkt met Kubernetes en CI/CD in een agile team.
+Dit vragen we
+Ervaring als data engineer.

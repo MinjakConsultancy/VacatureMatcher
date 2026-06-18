@@ -1,0 +1,50 @@
+# Kopieer naar config/keywords.yaml of zet KEYWORDS_CONFIG naar dit pad.
+# Positieve termen: gewicht bij match in vacaturetekst (+25% bonus als ook in CV).
+
+positive:
+  python: 3.0
+  java: 2.5
+  typescript: 2.5
+  react: 2.0
+  sql: 2.5
+  api: 2.0
+  rest: 1.5
+  kubernetes: 2.5
+  docker: 2.0
+  azure: 2.5
+  aws: 2.0
+  devops: 3.0
+  ci/cd: 2.5
+  gitlab: 2.0
+  data engineer: 3.0
+  data-engineer: 3.0
+  data platform: 2.5
+  machine learning: 2.5
+  ai: 2.0
+  spark: 2.0
+  software engineer: 3.0
+  platform engineer: 2.5
+  security: 2.0
+  agile: 1.5
+  scrum: 1.5
+
+negative:
+  sap: -2.0
+  abap: -3.0
+  trainee: -2.0
+  junior: -2.0
+
+# Optionele bonussen (configureerbaar per deployment)
+bonuses:
+  - id: tech_title
+    when: title_contains_any
+    terms: [engineer, developer, ontwikkelaar, data, devops, architect, scrum, platform]
+    weight: 2.0
+  - id: preferred_city
+    when: blob_contains
+    term: den haag
+    weight: 1.5
+  - id: preferred_org
+    when: organisation_contains
+    term: voorbeeld
+    weight: 1.0

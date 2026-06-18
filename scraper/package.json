@@ -1,0 +1,7 @@
+{
+  "name": "ikwerk-scraper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright + browser-fetch scripts voor IkWerk vacature-scrape",
+  "type": "commonjs"
+}

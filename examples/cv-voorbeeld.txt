@@ -1,0 +1,19 @@
+Profiel:
+Senior software- en data-engineer met ruim tien jaar ervaring in platformontwikkeling, integratie en cloud. Sterk in Python, SQL en moderne CI/CD-praktijken. Combineert hands-on bouwen met het begeleiden van teams en het vertalen van businessvragen naar robuuste oplossingen. Interesse in data engineering, DevOps en praktische toepassingen van AI (RAG, agentic workflows).
+
+Opleidingen:
+MSc Informatica, Hogeschool Voorbeeldstad
+MBA Big Data Analyses
+
+Werkervaring:
+Senior Data Engineer | Ministerie van Voorbeeld | 2020 – heden
+- Ontwerp en bouw van data pipelines (Python, Spark, dbt) op Azure.
+- Platform engineering: Kubernetes, GitLab CI/CD, infrastructure as code.
+- Samenwerking met product owners en security teams.
+
+Software Engineer | Consultancy Voorbeeld BV | 2015 – 2020
+- Integratieprojecten (REST APIs, event-driven architecture).
+- Tech lead voor team van vijf ontwikkelaars.
+
+Vaardigheden:
+Python, SQL, TypeScript, Docker, Kubernetes, Azure, AWS, GitLab, Airflow, Kafka, agile/scrum.

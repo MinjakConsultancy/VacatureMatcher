@@ -1,0 +1,4 @@
+scikit-learn>=1.6,<2
+numpy>=2.1
+scipy>=1.14
+joblib>=1.4

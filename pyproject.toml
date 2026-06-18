@@ -1,0 +1,36 @@
+[project]
+name = "vacature"
+requires-python = ">=3.13"
+dependencies = []
+
+[project.optional-dependencies]
+backend = [
+    "fastapi>=0.115,<1",
+    "uvicorn[standard]>=0.34,<1",
+    "psycopg[binary]>=3.2,<4",
+    "boto3>=1.37,<2",
+    "python-multipart>=0.0.20",
+    "python-docx>=1.1,<2",
+    "pydantic>=2.10,<3",
+]
+db = [
+    "psycopg[binary]>=3.2,<4",
+    "boto3>=1.37,<2",
+]
+rag = [
+    "scikit-learn>=1.6,<2",
+    "numpy>=2.1",
+    "scipy>=1.14",
+    "joblib>=1.4",
+]
+dev = [
+    "pytest>=8.3",
+    "httpx>=0.28",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["db", "rag", "web/backend"]
+testpaths = ["tests"]
+markers = [
+    "integration: tests that need Postgres or Docker",
+]
