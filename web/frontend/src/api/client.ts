@@ -48,21 +48,8 @@ export type MatchResult = {
   solliciteer_deadline?: string;
 };
 
-const ADMIN_KEY = "vacature_admin_token";
-
-export function getAdminToken(): string {
-  return localStorage.getItem(ADMIN_KEY) || "";
-}
-
-export function setAdminToken(t: string) {
-  localStorage.setItem(ADMIN_KEY, t);
-}
-
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  const headers: Record<string, string> = { ...(init?.headers as Record<string, string>) };
-  const token = getAdminToken();
-  if (token) headers["X-Admin-Token"] = token;
-  const res = await fetch(path, { ...init, headers });
+  const res = await fetch(path, init);
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
@@ -76,18 +63,19 @@ export const fetchVacancies = (params: URLSearchParams) =>
 
 export const fetchVacancy = (slug: string) => api<VacancyDetail>(`/api/vacancies/${slug}`);
 
-export const startVervers = (sinds: string) =>
+export const startVervers = (sinds: string, rebuild_index = true) =>
   api<Job>("/api/jobs/ververs", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ sinds }),
+    body: JSON.stringify({ sinds, rebuild_index }),
   });
 
-export const startMatch = (rebuild_index: boolean) =>
+/** Alleen voor scripts/CLI; niet gebruikt in de UI. */
+export const startRebuildIndex = () =>
   api<Job>("/api/jobs/match", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ rebuild_index }),
+    body: JSON.stringify({ rebuild_index: true }),
   });
 
 export const fetchJob = (id: string) => api<Job>(`/api/jobs/${id}`);
@@ -103,10 +91,7 @@ export const uploadCvMatch = async (
   if (opts.location) fd.append("location", opts.location);
   fd.append("open_only", String(opts.open_only));
   fd.append("top_n", String(opts.top_n));
-  const headers: Record<string, string> = {};
-  const token = getAdminToken();
-  if (token) headers["X-Admin-Token"] = token;
-  const res = await fetch("/api/match/cv", { method: "POST", body: fd, headers });
+  const res = await fetch("/api/match/cv", { method: "POST", body: fd });
   if (!res.ok) throw new Error(await res.text());
   return res.json() as Promise<Job>;
 };
@@ -142,10 +127,7 @@ export const fetchMotivatieStijlStatus = () => api<MotivatieStijlStatus>("/api/m
 export const uploadMotivatieStijl = async (file: File) => {
   const fd = new FormData();
   fd.append("file", file);
-  const headers: Record<string, string> = {};
-  const token = getAdminToken();
-  if (token) headers["X-Admin-Token"] = token;
-  const res = await fetch("/api/motivatie-stijl", { method: "POST", body: fd, headers });
+  const res = await fetch("/api/motivatie-stijl", { method: "POST", body: fd });
   if (!res.ok) throw new Error(await res.text());
   return res.json() as Promise<MotivatieStijlStatus>;
 };

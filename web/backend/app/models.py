@@ -58,6 +58,7 @@ class StatsOut(BaseModel):
 
 class JobCreateVervers(BaseModel):
     sinds: str = "5d"
+    rebuild_index: bool = True
 
 
 class VacancyDismissRequest(BaseModel):

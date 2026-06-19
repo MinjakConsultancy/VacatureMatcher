@@ -214,6 +214,8 @@ export function MatchPage() {
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
             Dit CV wordt opgeslagen op MinIO en gebruikt voor motivatiebrieven op vacaturepagina&apos;s.
+            Match gebruikt de huidige RAG-index. Na nieuwe vacatures: Beheer → Data verversen
+            (laat &apos;RAG-index herbouwen&apos; aangevinkt).
           </p>
           <FileUploadZone file={file} onFileChange={setFile} />
 
@@ -227,7 +229,7 @@ export function MatchPage() {
           </div>
 
           <Button onClick={submit} disabled={!file || (status === "running" || status === "queued")}>
-            Match starten
+            CV uploaden en matchen
           </Button>
           {error && <p className="text-red-600 text-sm">{error}</p>}
           {cvSaved && (

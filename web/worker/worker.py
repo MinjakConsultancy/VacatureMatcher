@@ -51,7 +51,7 @@ def bootstrap_index() -> None:
         pass
 
 
-def run_ververs(job_id: str, params: dict) -> None:
+def run_ververs(job_id: str, params: dict) -> dict:
     sinds = params.get("sinds", "5d")
     cmd = ["bash", str(VERVERS_SH), sinds, "--no-txt"]
     proc = subprocess.Popen(
@@ -69,13 +69,21 @@ def run_ververs(job_id: str, params: dict) -> None:
     if code != 0:
         raise RuntimeError(f"ververs exit {code}")
 
+    chunks = 0
+    if params.get("rebuild_index", True):
+        append_log(job_id, "RAG-index herbouwen...\n")
+        chunks = rebuild_index(INDEX_DIR)
+        append_log(job_id, f"RAG-index: {chunks} chunks\n")
+        upload_index(INDEX_DIR)
+    return {"ok": True, "chunks": chunks}
+
 
 def run_match(job_id: str, params: dict) -> dict:
-    append_log(job_id, "RAG-index herbouwen...\n")
     n = 0
     if params.get("rebuild_index", True):
+        append_log(job_id, "RAG-index herbouwen...\n")
         n = rebuild_index(INDEX_DIR)
-        append_log(job_id, f"Index: {n} chunks\n")
+        append_log(job_id, f"RAG-index: {n} chunks\n")
         upload_index(INDEX_DIR)
     return {"chunks": n}
 
@@ -181,8 +189,8 @@ def handle_job(job: dict) -> None:
         params = json.loads(params)
     try:
         if jtype == "ververs":
-            run_ververs(job_id, params)
-            finish_job(job_id, status="done", result={"ok": True})
+            result = run_ververs(job_id, params)
+            finish_job(job_id, status="done", result=result)
         elif jtype == "match":
             result = run_match(job_id, params)
             finish_job(job_id, status="done", result=result)

@@ -3,15 +3,24 @@ import { useEffect, useState } from "react";
 import {
   fetchJobs,
   fetchJob,
-  startMatch,
   startVervers,
-  getAdminToken,
-  setAdminToken,
   Job,
 } from "../api/client";
-import { Button, Card, CardContent, CardHeader, CardTitle, Input, Select } from "../components/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Select } from "../components/ui";
 
 const LLM_JOB_TYPES = new Set(["llm_motivatie", "llm_explain"]);
+
+const JOB_TYPE_LABELS: Record<string, string> = {
+  ververs: "Data verversen",
+  match: "RAG-index",
+  cv_match: "CV-match",
+  llm_motivatie: "Motivatiebrief",
+  llm_explain: "Match-uitleg",
+};
+
+function jobTypeLabel(jobType: string): string {
+  return JOB_TYPE_LABELS[jobType] ?? jobType;
+}
 
 function vacancySlugFromJob(job: Job): string | null {
   if (!LLM_JOB_TYPES.has(job.job_type)) return null;
@@ -23,9 +32,8 @@ function vacancySlugFromJob(job: Job): string | null {
 }
 
 export function BeheerPage() {
-  const [token, setToken] = useState(getAdminToken());
   const [sinds, setSinds] = useState("5d");
-  const [rebuild, setRebuild] = useState(true);
+  const [rebuildIndex, setRebuildIndex] = useState(true);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [activeJob, setActiveJob] = useState<Job | null>(null);
   const [error, setError] = useState("");
@@ -47,24 +55,9 @@ export function BeheerPage() {
     return () => clearInterval(t);
   }, [activeJob]);
 
-  const saveToken = () => {
-    setAdminToken(token);
-    setError("");
-  };
-
   const runVervers = async () => {
     try {
-      const j = await startVervers(sinds);
-      setActiveJob(j);
-      refresh();
-    } catch (e) {
-      setError(String(e));
-    }
-  };
-
-  const runMatch = async () => {
-    try {
-      const j = await startMatch(rebuild);
+      const j = await startVervers(sinds, rebuildIndex);
       setActiveJob(j);
       refresh();
     } catch (e) {
@@ -76,52 +69,44 @@ export function BeheerPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Beheer</h1>
 
-      <Card>
-        <CardHeader><CardTitle>Admin-token (optioneel)</CardTitle></CardHeader>
-        <CardContent className="flex gap-2">
-          <Input value={token} onChange={(e) => setToken(e.target.value)} placeholder="API_ADMIN_TOKEN" className="max-w-md" />
-          <Button onClick={saveToken}>Opslaan</Button>
-        </CardContent>
-      </Card>
-
       {error && <p className="text-red-600 text-sm">{error}</p>}
 
-      <div className="grid md:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader><CardTitle>Data verversen</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            <Select value={sinds} onChange={(e) => setSinds(e.target.value)}>
-              <option value="gisteren">Gisteren</option>
-              <option value="3d">3 dagen</option>
-              <option value="5d">5 dagen</option>
-              <option value="7d">7 dagen</option>
-              <option value="1maand">1 maand</option>
-              <option value="all">Alles (geen datumfilter)</option>
-            </Select>
-            <p className="text-xs text-muted-foreground">
-              Bron: IkWerk (met inlog) of Werkenbijdeoverheid (zonder inlog, automatisch).
-              Bij sinds=all kan een WbO-run lang duren (duizenden vacatures).
-            </p>
-            <Button onClick={runVervers}>Start ververs</Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader><CardTitle>Match herberekenen</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={rebuild} onChange={(e) => setRebuild(e.target.checked)} />
-              RAG-index herbouwen
-            </label>
-            <Button onClick={runMatch}>Start match</Button>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="max-w-xl">
+        <CardHeader><CardTitle>Data verversen</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <Select value={sinds} onChange={(e) => setSinds(e.target.value)}>
+            <option value="gisteren">Gisteren</option>
+            <option value="3d">3 dagen</option>
+            <option value="5d">5 dagen</option>
+            <option value="7d">7 dagen</option>
+            <option value="1maand">1 maand</option>
+            <option value="all">Alles (geen datumfilter)</option>
+          </Select>
+          <p className="text-xs text-muted-foreground">
+            Bron: IkWerk (met inlog) of Werkenbijdeoverheid (zonder inlog, automatisch).
+            Bij sinds=all kan een WbO-run lang duren (duizenden vacatures).
+          </p>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={rebuildIndex}
+              onChange={(e) => setRebuildIndex(e.target.checked)}
+            />
+            RAG-index herbouwen na ververs
+          </label>
+          <p className="text-xs text-muted-foreground">
+            Nodig voor actuele CV-match scores na nieuwe vacatures. Vink uit als je alleen data wilt ophalen.
+          </p>
+          <Button onClick={runVervers}>Start ververs</Button>
+        </CardContent>
+      </Card>
 
       {activeJob && (
         <Card>
           <CardHeader>
-            <CardTitle>Actieve job: {activeJob.job_type} — {activeJob.status}</CardTitle>
+            <CardTitle>
+              Actieve job: {jobTypeLabel(activeJob.job_type)} — {activeJob.status}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <pre className="text-xs bg-muted p-3 rounded-md max-h-64 overflow-auto whitespace-pre-wrap">
@@ -148,7 +133,7 @@ export function BeheerPage() {
                 const slug = vacancySlugFromJob(j);
                 return (
                 <tr key={j.id} className="border-b border-border/50">
-                  <td className="py-2">{j.job_type}</td>
+                  <td className="py-2">{jobTypeLabel(j.job_type)}</td>
                   <td className="py-2">
                     {slug ? (
                       <Link to={`/vacatures/${slug}`} className="text-primary hover:underline">

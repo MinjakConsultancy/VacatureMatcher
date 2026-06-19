@@ -74,6 +74,23 @@ Zorg dat het endpoint **bereikbaar is vanuit de worker-container** (VPN/firewall
 
 Zie ook [web/README.md](web/README.md) voor API-endpoints en opslag op MinIO.
 
+## Data & RAG-index
+
+| Stap | Waar | Wat |
+|------|------|-----|
+| 1. Vacatures ophalen | Beheer → Data verversen | Scrape → Postgres |
+| 2. Index bijwerken | Vinkje op dezelfde kaart | RAG TF-IDF-index (standaard aan) |
+| 3. CV matchen | Match-pagina | Upload CV → ranking tegen index |
+
+Na **Data verversen** het vinkje **RAG-index herbouwen na ververs** aangevinkt laten voor actuele CV-match scores.
+
+**Alleen index herbouwen** (bijv. na `import_json` zonder scrape):
+
+```bash
+cd rag && ./run.sh build_index.py
+# of: POST /api/jobs/match met {"rebuild_index": true}
+```
+
 ## CV-match scores
 
 Twee scores per vacature op `/match`:
@@ -103,7 +120,7 @@ cd rag && ./run.sh build_index.py
 ## Security
 
 - **`.env` blijft lokaal** en staat in `.gitignore` — commit nooit secrets.
-- Zet `API_ADMIN_TOKEN` in productie; zonder token zijn beheer-endpoints open (alleen voor lokaal dev).
+- Zet `API_ADMIN_TOKEN` in `.env` op de API-service voor productie; zonder waarde zijn beheer-endpoints onbeveiligd (alleen lokaal dev).
 - Roteer `IKWERK_PASSWORD` als het ooit buiten `.env` is gedeeld.
 
 ## License

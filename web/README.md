@@ -17,15 +17,17 @@ docker compose up -d --build
 Zet in `.env` (optioneel):
 
 ```
-API_ADMIN_TOKEN=een-geheim-token
 SCRAPE_SOURCE=auto
 IKWERK_EMAIL=...    # optioneel; zonder wachtwoord → WbO
 IKWERK_PASSWORD=...
+API_ADMIN_TOKEN=    # optioneel; leeg = beheer-endpoints open (lokaal dev)
 ```
 
-Voor beheer-acties (ververs, match, CV-upload): token invullen op `/beheer` of leeg laten als `API_ADMIN_TOKEN` niet gezet is.
+Voor beheer-acties (ververs, CV-upload): zet `API_ADMIN_TOKEN` in `.env` op de API-container, of laat leeg voor lokaal dev (geen auth).
 
-**Data verversen** (Beheer → Data verversen): alleen parameter **sinds**. Zonder `IKWERK_EMAIL`/`IKWERK_PASSWORD` scrapet de worker automatisch van Werkenbijdeoverheid (geen login). Met credentials: IkWerk via Playwright (xvfb + reCAPTCHA v3). Forceer bron via `SCRAPE_SOURCE=ikwerk|wbo|auto` in `.env`.
+**Data verversen** (Beheer): parameter **sinds** + optioneel vinkje **RAG-index herbouwen na ververs** (standaard aan). Zonder `IKWERK_EMAIL`/`IKWERK_PASSWORD` scrapet de worker automatisch van Werkenbijdeoverheid (geen login). Met credentials: IkWerk via Playwright (xvfb + reCAPTCHA v3). Forceer bron via `SCRAPE_SOURCE=ikwerk|wbo|auto` in `.env`.
+
+**CV-match** gebeurt op de Match-pagina (upload → ranking); dat is los van data verversen.
 
 ## Ontwikkeling frontend lokaal
 
@@ -37,6 +39,8 @@ cd web/frontend && npm install && npm run dev
 ## RAG-index
 
 Persistent volume `rag_index` op `/data/rag-index` in api/worker. Backup naar MinIO `gold/rag-index/latest/`.
+
+Wordt standaard **herbouwd na Data verversen** (vinkje op Beheer). Handmatig zonder scrape: `cd rag && ./run.sh build_index.py` of `POST /api/jobs/match`.
 
 ## LLM (motivatiebrief & match-uitleg)
 

@@ -3,41 +3,9 @@ import {
   fetchCvMatchLatest,
   fetchMotivatieLatest,
   fetchStats,
-  getAdminToken,
-  setAdminToken,
   setVacancyDismissed,
   startVervers,
 } from "./client";
-
-describe("admin token", () => {
-  beforeEach(() => {
-    localStorage.clear();
-  });
-
-  it("stores and retrieves admin token", () => {
-    expect(getAdminToken()).toBe("");
-    setAdminToken("secret");
-    expect(getAdminToken()).toBe("secret");
-  });
-
-  it("sends X-Admin-Token header when set", async () => {
-    setAdminToken("secret");
-    const fetchMock = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ total: 1, open_count: 1, closed_count: 0 }),
-    });
-    vi.stubGlobal("fetch", fetchMock);
-
-    await fetchStats();
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      "/api/stats",
-      expect.objectContaining({
-        headers: expect.objectContaining({ "X-Admin-Token": "secret" }),
-      })
-    );
-  });
-});
 
 describe("api error handling", () => {
   beforeEach(() => {
@@ -125,7 +93,7 @@ describe("mutations", () => {
       "/api/jobs/ververs",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ sinds: "gisteren" }),
+        body: JSON.stringify({ sinds: "gisteren", rebuild_index: true }),
       })
     );
   });
