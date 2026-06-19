@@ -38,11 +38,18 @@ cd web/frontend && npm install && npm run dev
 
 Persistent volume `rag_index` op `/data/rag-index` in api/worker. Backup naar MinIO `gold/rag-index/latest/`.
 
-## Ollama (lokale LLM)
+## LLM (motivatiebrief & match-uitleg)
 
-LLM-taken draaien **async via de worker** (niet meer sync in de API). Output wordt opgeslagen op MinIO onder `gold/llm/`. Maximaal **één Ollama-call tegelijk**; extra jobs wachten in `api_jobs` met wachtrijpositie.
+LLM-taken draaien **async via de worker**. Output op MinIO onder `gold/llm/`. Maximaal **één LLM-call tegelijk**; extra jobs wachten in `api_jobs`.
 
-### Setup
+Kies de backend met `LLM_PROVIDER` in `.env` (zelfde waarde voor Docker en lokale CLI). **Geen fallback:** bij `openai_compatible` wordt Ollama niet geprobeerd, en omgekeerd.
+
+| Provider | Variabelen |
+|----------|------------|
+| `ollama` | `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, … |
+| `openai_compatible` | `OPENAI_BASE_URL`, `OPENAI_MODEL`, `OPENAI_API_KEY`, … |
+
+### Ollama (`LLM_PROVIDER=ollama`)
 
 ```bash
 ollama serve
@@ -52,13 +59,22 @@ ollama pull llama3.2
 In `.env`:
 
 ```
-OLLAMA_BASE_URL=http://localhost:11434
+LLM_PROVIDER=ollama
+OLLAMA_BASE_URL=http://host.docker.internal:11434
 OLLAMA_MODEL=llama3.2
 OLLAMA_TIMEOUT=600
 OLLAMA_KEEP_ALIVE=10m
 ```
 
-De **worker** (niet de API) praat met Ollama via `host.docker.internal:11434`.
+### OpenAI-compatible (`LLM_PROVIDER=openai_compatible`)
+
+```
+LLM_PROVIDER=openai_compatible
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_API_KEY=sk-...
+OPENAI_TIMEOUT=600
+```
 
 ### Gebruik
 

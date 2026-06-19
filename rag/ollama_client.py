@@ -8,7 +8,7 @@ import urllib.error
 import urllib.request
 from typing import Any
 
-DEFAULT_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
+DEFAULT_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://host.docker.internal:11434")
 DEFAULT_MODEL = os.environ.get("OLLAMA_MODEL", "")
 DEFAULT_TIMEOUT = float(os.environ.get("OLLAMA_TIMEOUT", "600"))
 DEFAULT_KEEP_ALIVE = os.environ.get("OLLAMA_KEEP_ALIVE", "10m")

@@ -8,8 +8,9 @@ from pathlib import Path
 from vacature_rag import DEFAULT_INDEX_DIR, VacatureRAG, ensure_deps_on_path
 
 LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "ollama").strip().lower() or "ollama"
+_OPENAI_PROVIDERS = {"openai", "openai_compatible", "tocode"}
 
-if LLM_PROVIDER in {"openai", "openai_compatible", "tocode"}:
+if LLM_PROVIDER in _OPENAI_PROVIDERS:
     from openai_compatible_client import (  # type: ignore
         DEFAULT_BASE_URL,
         DEFAULT_MODEL,
@@ -101,6 +102,25 @@ def _truncate_briefing(text: str, limit: int = 14000) -> str:
     return head + "\n\n" + vac_part[:tail_budget] + "\n\n[… vacaturetekst ingekort …]"
 
 
+def _llm_unavailable_message() -> str:
+    if LLM_PROVIDER in _OPENAI_PROVIDERS:
+        return (
+            f"OpenAI-compatible LLM niet bereikbaar op {DEFAULT_BASE_URL} "
+            f"(LLM_PROVIDER={LLM_PROVIDER}). "
+            "Controleer OPENAI_BASE_URL, OPENAI_API_KEY en netwerk/VPN."
+        )
+    return (
+        f"Ollama niet bereikbaar op {DEFAULT_BASE_URL} (LLM_PROVIDER={LLM_PROVIDER}). "
+        "Start Ollama op de host (ollama serve) en controleer OLLAMA_BASE_URL "
+        "(Docker: http://host.docker.internal:11434)."
+    )
+
+
+def _require_llm_available() -> None:
+    if not is_available():
+        raise RuntimeError(_llm_unavailable_message())
+
+
 def generate_motivatie(
     slug: str,
     *,
@@ -111,11 +131,7 @@ def generate_motivatie(
     model: str | None = None,
     require_cv: bool = False,
 ) -> dict[str, str]:
-    if not is_available():
-        raise RuntimeError(
-            "Ollama niet bereikbaar. Start Ollama en zet OLLAMA_BASE_URL "
-            "(in Docker: http://host.docker.internal:11434)"
-        )
+    _require_llm_available()
 
     kern = cv_kern
     if not kern and cv_kern_path and cv_kern_path.exists():
@@ -174,8 +190,7 @@ def explain_match(
     index_dir: Path = DEFAULT_INDEX_DIR,
     model: str | None = None,
 ) -> dict[str, str]:
-    if not is_available():
-        raise RuntimeError("Ollama niet bereikbaar")
+    _require_llm_available()
 
     resolved, briefing = build_briefing(slug, index_dir=index_dir)
     used_model = resolve_model(model=model)

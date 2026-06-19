@@ -53,7 +53,9 @@ Zie [.env.example](../.env.example). Belangrijk:
 - `DATABASE_URL`, `MINIO_*` — data layer
 - `SCRAPE_SOURCE` — `auto` (default), `ikwerk`, of `wbo`
 - `IKWERK_EMAIL`, `IKWERK_PASSWORD` — alleen voor IkWerk-scrape
-- `LLM_PROVIDER`, `OLLAMA_*` of `OPENAI_*` — LLM
+- `LLM_PROVIDER` — `ollama` of `openai_compatible` (exclusief; geen fallback)
+- `OLLAMA_*` — alleen bij `LLM_PROVIDER=ollama`
+- `OPENAI_*` — alleen bij `LLM_PROVIDER=openai_compatible`
 - `KEYWORDS_CONFIG` — keyword-scoring
 - `API_ADMIN_TOKEN` — beveilig beheer-API
 
