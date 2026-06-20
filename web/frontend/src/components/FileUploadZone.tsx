@@ -11,7 +11,7 @@ type FileUploadZoneProps = {
 export function FileUploadZone({
   file,
   onFileChange,
-  accept = ".docx,.txt",
+  accept = ".pdf,.docx,.txt",
   idleLabel = "Sleep bestand hierheen",
 }: FileUploadZoneProps) {
   const [drag, setDrag] = useState(false);

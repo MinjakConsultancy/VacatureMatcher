@@ -1,9 +1,29 @@
 from __future__ import annotations
 
 import io
-from pathlib import Path
 
 from docx import Document
+from pypdf import PdfReader
+from pypdf.errors import PdfReadError
+
+
+def _parse_pdf(data: bytes) -> str:
+    # Text-based PDFs only; scanned/image PDFs need OCR.
+    try:
+        reader = PdfReader(io.BytesIO(data))
+    except PdfReadError as exc:
+        raise ValueError("PDF kon niet worden gelezen") from exc
+
+    pages: list[str] = []
+    for page in reader.pages:
+        text = page.extract_text() or ""
+        if text.strip():
+            pages.append(text)
+
+    result = "\n\n".join(pages).strip()
+    if not result:
+        raise ValueError("PDF bevat geen leesbare tekst (mogelijk gescande afbeelding)")
+    return result
 
 
 def parse_cv_bytes(data: bytes, filename: str) -> str:
@@ -19,4 +39,6 @@ def parse_cv_bytes(data: bytes, filename: str) -> str:
                 if any(cells):
                     lines.append("\t".join(cells))
         return "\n".join(lines)
-    raise ValueError("Alleen .docx of .txt toegestaan")
+    if name.endswith(".pdf"):
+        return _parse_pdf(data)
+    raise ValueError("Alleen .pdf, .docx of .txt toegestaan")

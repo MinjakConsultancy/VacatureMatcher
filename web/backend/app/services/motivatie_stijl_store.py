@@ -25,6 +25,8 @@ def _source_key(filename: str) -> str:
 
 def _content_type(filename: str) -> str:
     name = filename.lower()
+    if name.endswith(".pdf"):
+        return "application/pdf"
     if name.endswith(".docx"):
         return "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     if name.endswith(".txt"):
