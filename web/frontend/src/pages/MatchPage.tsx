@@ -210,7 +210,7 @@ export function MatchPage() {
       </div>
 
       <Card>
-        <CardHeader><CardTitle>Upload CV (.docx of .txt)</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Upload CV (.pdf, .docx of .txt)</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
             Dit CV wordt opgeslagen op MinIO en gebruikt voor motivatiebrieven op vacaturepagina&apos;s.
